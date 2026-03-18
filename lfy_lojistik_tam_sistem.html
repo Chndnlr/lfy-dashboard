@@ -1,0 +1,605 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1b2a;--bg2:#162032;--bg3:#1e2d40;--bg4:#243448;
+  --acc:#f0a500;--blue:#2e86de;--grn:#27ae60;--red:#e74c3c;--orn:#e67e22;--pur:#8e44ad;
+  --tx:#e8eaf0;--tx2:#9ba8ba;--tx3:#6b7a8d;
+  --br:rgba(255,255,255,0.08);
+}
+body{background:transparent;font-family:var(--font-sans,sans-serif);color:var(--tx);font-size:12px}
+.shell{display:flex;height:100vh;min-height:680px;background:var(--bg)}
+.sb{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--br);display:flex;flex-direction:column;overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* Sidebar */
+.sb-logo{padding:14px 14px 12px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:9px}
+.sb-icon{width:30px;height:30px;background:var(--acc);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:11px;color:#000;flex-shrink:0}
+.sb-name{font-size:13px;font-weight:500;line-height:1.2}
+.sb-sub{font-size:10px;color:var(--tx3)}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0}
+.sb-sec{padding:7px 14px 3px;font-size:9px;color:var(--tx3);letter-spacing:1px;text-transform:uppercase}
+.sb-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;font-size:12px;color:var(--tx2);border-left:2px solid transparent;transition:all .12s;user-select:none}
+.sb-item:hover{background:var(--bg3);color:var(--tx)}
+.sb-item.on{background:var(--bg3);color:var(--acc);border-left-color:var(--acc)}
+.sb-item .ic{font-size:13px;width:16px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:rgba(240,165,0,.2);color:var(--acc);font-size:9px;padding:1px 5px;border-radius:8px}
+.sb-foot{padding:12px 14px;border-top:1px solid var(--br);font-size:10px;color:var(--tx3)}
+.dot{display:inline-block;width:6px;height:6px;background:var(--grn);border-radius:50%;margin-right:5px}
+
+/* Topbar */
+.tb{height:48px;background:var(--bg2);border-bottom:1px solid var(--br);display:flex;align-items:center;padding:0 18px;gap:10px;flex-shrink:0}
+.tb-title{font-size:14px;font-weight:500;flex:1}
+.yr-tabs{display:flex;gap:3px}
+.yr-tab{padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;border:1px solid var(--br);color:var(--tx2);background:var(--bg3);transition:all .12s}
+.yr-tab.on{background:var(--acc);color:#000;border-color:var(--acc);font-weight:500}
+
+/* Content */
+.cnt{flex:1;overflow-y:auto;padding:14px 18px}
+
+/* KPI */
+.kpi-row{display:grid;gap:10px;margin-bottom:12px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpi{background:var(--bg2);border:1px solid var(--br);border-radius:9px;padding:12px 14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--al,var(--acc))}
+.kpi-l{font-size:9px;color:var(--tx3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.kpi-v{font-size:17px;font-weight:500;line-height:1.1}
+.kpi-s{font-size:10px;color:var(--tx3);margin-top:3px}
+
+/* Panel */
+.panel{background:var(--bg2);border:1px solid var(--br);border-radius:9px;margin-bottom:12px}
+.ph{padding:10px 14px 8px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:8px}
+.pt{font-size:12px;font-weight:500;flex:1}
+.pb{padding:12px 14px}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* Table */
+.t{width:100%;border-collapse:collapse;font-size:11px}
+.t th{color:var(--tx3);font-weight:400;padding:0 5px 6px;text-align:right;border-bottom:1px solid var(--br)}
+.t th:first-child{text-align:left}
+.t td{padding:6px 5px;border-bottom:1px solid var(--br);color:var(--tx2);text-align:right;white-space:nowrap}
+.t td:first-child{color:var(--tx);text-align:left}
+.t tr:last-child td{border-bottom:none}
+.t .tot td{color:var(--tx);font-weight:500;border-top:1px solid rgba(240,165,0,.2);padding-top:8px}
+
+/* Bar */
+.br-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.br-l{font-size:11px;color:var(--tx2);width:88px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-tr{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden}
+.br-f{height:100%;border-radius:3px}
+.br-v{font-size:10px;color:var(--tx3);width:62px;text-align:right;white-space:nowrap}
+
+/* Colors */
+.up{color:#4cd989}.dn{color:#ff7b6e}.warn{color:var(--acc)}
+.badge{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px}
+.bg{background:rgba(39,174,96,.12);color:#4cd989}
+.br2{background:rgba(231,76,60,.12);color:#ff7b6e}
+.bo{background:rgba(240,165,0,.12);color:var(--acc)}
+.bb{background:rgba(46,134,222,.12);color:#5ab8ff}
+
+/* Gider grid */
+.gd-head{display:grid;grid-template-columns:120px repeat(5,1fr);gap:0;margin-bottom:2px}
+.gd-hc{font-size:9px;color:var(--tx3);text-align:right;padding:0 3px 5px}
+.gd-hc:first-child{text-align:left}
+.gd-row{display:grid;grid-template-columns:120px repeat(5,1fr);gap:0;border-bottom:1px solid var(--br)}
+.gd-row:hover{background:var(--bg3)}
+.gd-c{font-size:11px;padding:6px 3px;text-align:right;color:var(--tx2)}
+.gd-c:first-child{color:var(--tx);text-align:left;font-size:10px}
+.gd-tot{background:var(--bg3);border-radius:5px;margin-top:4px}
+.gd-tot .gd-c{color:var(--tx);font-weight:500}
+
+/* Car tabs */
+.ctabs{display:flex;gap:0;border-bottom:1px solid var(--br);margin-bottom:12px}
+.ctab{padding:7px 14px;font-size:11px;cursor:pointer;color:var(--tx2);border-bottom:2px solid transparent;transition:all .12s}
+.ctab.on{color:var(--acc);border-bottom-color:var(--acc)}
+
+/* Alert */
+.alr{border-radius:7px;padding:10px 12px;margin-bottom:8px;font-size:11px;line-height:1.6;border-left:2px solid}
+.alr-r{background:rgba(231,76,60,.07);border-color:var(--red);color:var(--tx2)}
+.alr-g{background:rgba(39,174,96,.07);border-color:var(--grn);color:var(--tx2)}
+.alr-o{background:rgba(240,165,0,.07);border-color:var(--acc);color:var(--tx2)}
+.alr strong{color:var(--tx)}
+
+/* Pages */
+.page{display:none}.page.on{display:block}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+</style>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sb">
+    <div class="sb-logo">
+      <div class="sb-icon">LFY</div>
+      <div><div class="sb-name">LFY Lojistik</div><div class="sb-sub">Yönetim Sistemi</div></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-sec">Genel</div>
+      <div class="sb-item on" onclick="go('dashboard',this)"><span class="ic">◻</span> Dashboard</div>
+
+      <div class="sb-sec">Yapılan İşler</div>
+      <div class="sb-item" onclick="go('yi-ozet',this)"><span class="ic">◻</span> Özet & KPI</div>
+      <div class="sb-item" onclick="go('yi-aylik',this)"><span class="ic">◻</span> Aylık Analiz</div>
+      <div class="sb-item" onclick="go('yi-musteri',this)"><span class="ic">◻</span> Müşteriler</div>
+
+      <div class="sb-sec">Araç Giderleri</div>
+      <div class="sb-item" onclick="go('ag-ozet',this)"><span class="ic">◻</span> Genel Özet</div>
+      <div class="sb-item" onclick="go('ag-detay',this)"><span class="ic">◻</span> Kalem Detayı</div>
+      <div class="sb-item" onclick="go('ag-analiz',this)"><span class="ic">◻</span> CPY 193 Analizi</div>
+      <div class="sb-item" onclick="go('ag-bb',this)"><span class="ic">◻</span> Başabaş Noktası</div>
+
+      <div class="sb-sec">Bütünleşik</div>
+      <div class="sb-item" onclick="go('butunlesik',this)"><span class="ic">◻</span> Net Kar Tablosu</div>
+    </nav>
+    <div class="sb-foot"><span class="dot"></span>2 ortak · Mart 2026</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tb">
+      <div class="tb-title" id="tb-title">Dashboard — LFY Lojistik</div>
+      <div class="yr-tabs" id="yr-tabs">
+        <div class="yr-tab on" onclick="setYr('2024')">2024</div>
+        <div class="yr-tab" onclick="setYr('2025')">2025</div>
+        <div class="yr-tab" onclick="setYr('2026')">2026 YTD</div>
+      </div>
+    </div>
+
+    <div class="cnt">
+
+      <!-- DASHBOARD -->
+      <div class="page on" id="p-dashboard">
+        <div class="kpi-row g4">
+          <div class="kpi" style="--al:var(--blue)"><div class="kpi-l">Toplam Sefer (2024-26)</div><div class="kpi-v">6.354</div><div class="kpi-s">3 yıl kümülatif</div></div>
+          <div class="kpi" style="--al:var(--grn)"><div class="kpi-l">Toplam Satış (2024-26)</div><div class="kpi-v" style="font-size:14px">₺103,9M</div><div class="kpi-s">3 yıl kümülatif</div></div>
+          <div class="kpi" style="--al:var(--acc)"><div class="kpi-l">LFY 24 — 5 Ay Net Kar</div><div class="kpi-v up" style="font-size:14px">₺359K</div><div class="kpi-s">En karlı öz araç</div></div>
+          <div class="kpi" style="--al:var(--red)"><div class="kpi-l">CPY 193 — 5 Ay Zarar</div><div class="kpi-v dn" style="font-size:14px">₺222K</div><div class="kpi-s">Kritik durum</div></div>
+        </div>
+
+        <div class="cols2">
+          <div class="panel">
+            <div class="ph"><div class="pt">Yıllık Satış Büyümesi</div></div>
+            <div class="pb">
+              <div class="br-row"><span class="br-l">2024</span><div class="br-tr"><div class="br-f" style="width:74%;background:var(--tx3)"></div></div><span class="br-v">₺37,7M</span></div>
+              <div class="br-row"><span class="br-l">2025</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--blue)"></div></div><span class="br-v up">₺51,0M</span></div>
+              <div class="br-row"><span class="br-l">2026 YTD</span><div class="br-tr"><div class="br-f" style="width:30%;background:var(--acc)"></div></div><span class="br-v">₺15,2M</span></div>
+              <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--br)">
+                <table class="t">
+                  <thead><tr><th>Yıl</th><th>Sefer</th><th>Satış</th><th>Kar</th><th>%</th></tr></thead>
+                  <tbody>
+                    <tr><td>2024</td><td>2.570</td><td>₺37,7M</td><td class="up">₺5,26M</td><td class="up">13,9</td></tr>
+                    <tr><td>2025</td><td>3.024</td><td>₺51,0M</td><td class="up">₺6,32M</td><td class="up">12,4</td></tr>
+                    <tr><td>2026</td><td>760</td><td>₺15,2M</td><td class="up">₺2,06M</td><td class="up">13,6</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><div class="pt">Öz Araç Performansı (Eyl–Oca)</div></div>
+            <div class="pb">
+              <table class="t">
+                <thead><tr><th>Araç</th><th>Maliyet</th><th>Satış</th><th>Kar/Zarar</th><th>Durum</th></tr></thead>
+                <tbody>
+                  <tr><td>35 LFY 24</td><td>₺449K</td><td>₺808K</td><td class="up">+₺359K</td><td><span class="badge bg">Sağlıklı</span></td></tr>
+                  <tr><td>35 CPY 193</td><td>₺1,61M</td><td>₺1,39M</td><td class="dn">-₺222K</td><td><span class="badge br2">Kritik</span></td></tr>
+                  <tr><td>35 CIC 121</td><td>₺444K</td><td>₺4,8K</td><td class="dn">-₺422K</td><td><span class="badge br2">Pasif</span></td></tr>
+                </tbody>
+              </table>
+              <div style="margin-top:12px">
+                <div class="br-row"><span class="br-l">LFY 24 Kar</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--grn)"></div></div><span class="br-v up">+₺359K</span></div>
+                <div class="br-row"><span class="br-l">CPY Zarar</span><div class="br-tr"><div class="br-f" style="width:62%;background:var(--red)"></div></div><span class="br-v dn">-₺222K</span></div>
+                <div class="br-row"><span class="br-l">CIC Zarar</span><div class="br-tr"><div class="br-f" style="width:100%;background:rgba(231,76,60,.4)"></div></div><span class="br-v dn">-₺422K</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cols2">
+          <div class="panel">
+            <div class="ph"><div class="pt">2025 Top Müşteriler</div></div>
+            <div class="pb">
+              <div class="br-row"><span class="br-l">VERGO</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--acc)"></div></div><span class="br-v">₺16,3M</span></div>
+              <div class="br-row"><span class="br-l">RHENUS</span><div class="br-tr"><div class="br-f" style="width:57%;background:var(--blue)"></div></div><span class="br-v">₺9,3M</span></div>
+              <div class="br-row"><span class="br-l">ALBATROS</span><div class="br-tr"><div class="br-f" style="width:55%;background:var(--pur)"></div></div><span class="br-v">₺9,0M</span></div>
+              <div class="br-row"><span class="br-l">BAKTAT</span><div class="br-tr"><div class="br-f" style="width:29%;background:var(--grn)"></div></div><span class="br-v">₺4,7M</span></div>
+              <div class="br-row"><span class="br-l">LİMOSA</span><div class="br-tr"><div class="br-f" style="width:17%;background:var(--tx3)"></div></div><span class="br-v">₺2,7M</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">Son Aktivite</div></div>
+            <div class="pb">
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--br)">
+                  <div style="width:7px;height:7px;border-radius:50%;background:var(--red);margin-top:3px;flex-shrink:0"></div>
+                  <div><div style="font-size:11px;color:var(--tx)">CPY 193 — Ocak 2026 sıfır satış</div><div style="font-size:10px;color:var(--tx3)">Araç aktif değil · Acil değerlendirme gerekli</div></div>
+                </div>
+                <div style="display:flex;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--br)">
+                  <div style="width:7px;height:7px;border-radius:50%;background:var(--grn);margin-top:3px;flex-shrink:0"></div>
+                  <div><div style="font-size:11px;color:var(--tx)">LFY 24 — 5 ay kesintisiz kâr</div><div style="font-size:10px;color:var(--tx3)">Toplam ₺359K net kâr · En verimli araç</div></div>
+                </div>
+                <div style="display:flex;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--br)">
+                  <div style="width:7px;height:7px;border-radius:50%;background:var(--acc);margin-top:3px;flex-shrink:0"></div>
+                  <div><div style="font-size:11px;color:var(--tx)">2025 — Rekor satış yılı</div><div style="font-size:10px;color:var(--tx3)">₺51M satış · 3.024 sefer · %35 büyüme</div></div>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <div style="width:7px;height:7px;border-radius:50%;background:var(--blue);margin-top:3px;flex-shrink:0"></div>
+                  <div><div style="font-size:11px;color:var(--tx)">2026 Mart YTD — 760 sefer</div><div style="font-size:10px;color:var(--tx3)">Şubat en yüksek aylık kâr: ₺1,2M</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- YI ÖZET -->
+      <div class="page" id="p-yi-ozet">
+        <div class="kpi-row g4" id="yi-kpi"></div>
+        <div class="cols2">
+          <div class="panel">
+            <div class="ph"><div class="pt">Aylık Satış (₺)</div></div>
+            <div class="pb"><div style="height:180px"><canvas id="ch-satis"></canvas></div></div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">Aylık Kâr (₺)</div></div>
+            <div class="pb"><div style="height:180px"><canvas id="ch-kar"></canvas></div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="ph"><div class="pt">Yıllık Karşılaştırma</div></div>
+          <div class="pb">
+            <table class="t">
+              <thead><tr><th>Yıl</th><th>Sefer</th><th>Toplam Alış</th><th>Toplam Satış</th><th>Net Kâr</th><th>Kâr %</th></tr></thead>
+              <tbody>
+                <tr><td>2024</td><td>2.570</td><td>₺32,5M</td><td>₺37,7M</td><td class="up">₺5,26M</td><td class="up">%13,9</td></tr>
+                <tr><td>2025</td><td>3.024</td><td>₺44,7M</td><td>₺51,0M</td><td class="up">₺6,32M</td><td class="up">%12,4</td></tr>
+                <tr><td>2026 YTD</td><td>760</td><td>₺13,1M</td><td>₺15,2M</td><td class="up">₺2,06M</td><td class="up">%13,6</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- YI AYLIK -->
+      <div class="page" id="p-yi-aylik">
+        <div class="panel">
+          <div class="ph"><div class="pt" id="ay-panel-title">Aylık Detay</div></div>
+          <div class="pb">
+            <table class="t">
+              <thead><tr><th>Ay</th><th>Sefer</th><th>Alış</th><th>Satış</th><th>Kâr</th><th>Kâr %</th></tr></thead>
+              <tbody id="ay-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- YI MÜŞTERİ -->
+      <div class="page" id="p-yi-musteri">
+        <div class="panel">
+          <div class="ph"><div class="pt" id="cust-title">Top Müşteriler</div></div>
+          <div class="pb">
+            <div class="cols2">
+              <table class="t">
+                <thead><tr><th>#</th><th>Müşteri</th><th>Satış</th><th>Pay</th></tr></thead>
+                <tbody id="cust-tbody"></tbody>
+              </table>
+              <div id="cust-bars"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AG ÖZET -->
+      <div class="page" id="p-ag-ozet">
+        <div class="kpi-row g3">
+          <div class="kpi" style="--al:var(--acc)"><div class="kpi-l">LFY 24 — 5 Ay Net Kâr</div><div class="kpi-v up">+₺359.161</div><div class="kpi-s">Kredi yok · Sağlıklı</div></div>
+          <div class="kpi" style="--al:var(--red)"><div class="kpi-l">CPY 193 — 5 Ay Net</div><div class="kpi-v dn">-₺222.464</div><div class="kpi-s">Kredili · Satış düşüşü</div></div>
+          <div class="kpi" style="--al:var(--blue)"><div class="kpi-l">CIC 121 — 5 Ay Net</div><div class="kpi-v dn">-₺422.468</div><div class="kpi-s">Kredili · Neredeyse pasif</div></div>
+        </div>
+        <div class="cols2">
+          <div class="panel">
+            <div class="ph"><div class="pt">Araç Bazlı Aylık Kâr/Zarar</div></div>
+            <div class="pb">
+              <table class="t">
+                <thead><tr><th>Araç / Ay</th><th>Eylül</th><th>Ekim</th><th>Kasım</th><th>Aralık</th><th>Oca 26</th></tr></thead>
+                <tbody>
+                  <tr><td>LFY 24</td><td class="up">+39.631</td><td class="up">+72.048</td><td class="up">+90.420</td><td class="up">+89.264</td><td class="up">+67.798</td></tr>
+                  <tr><td>CPY 193</td><td class="up">+112.436</td><td class="dn">-7.894</td><td class="dn">-39.888</td><td class="dn">-226.325</td><td class="dn">-260.793</td></tr>
+                  <tr><td>CIC 121</td><td class="dn">-90.504</td><td class="dn">-80.796</td><td class="dn">-98.745</td><td class="dn">-81.903</td><td class="dn">-70.464</td></tr>
+                  <tr class="tot"><td>TOPLAM</td><td class="up">+61.563</td><td class="dn">-16.642</td><td class="dn">-48.213</td><td class="dn">-219.964</td><td class="dn">-263.459</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">5 Ay Kümülatif Gider Kalemleri</div></div>
+            <div class="pb">
+              <div class="br-row"><span class="br-l">Kredi (CIC+CPY)</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--red)"></div></div><span class="br-v dn">₺1,67M</span></div>
+              <div class="br-row"><span class="br-l">Maaş (3 araç)</span><div class="br-tr"><div class="br-f" style="width:45%;background:var(--orn)"></div></div><span class="br-v">₺755K</span></div>
+              <div class="br-row"><span class="br-l">Yakıt (3 araç)</span><div class="br-tr"><div class="br-f" style="width:28%;background:var(--pur)"></div></div><span class="br-v">₺474K</span></div>
+              <div class="br-row"><span class="br-l">SGK (3 araç)</span><div class="br-tr"><div class="br-f" style="width:22%;background:var(--acc)"></div></div><span class="br-v">₺366K</span></div>
+              <div class="br-row"><span class="br-l">Sigorta+Kasko</span><div class="br-tr"><div class="br-f" style="width:8%;background:var(--blue)"></div></div><span class="br-v">₺133K</span></div>
+              <div class="br-row"><span class="br-l">Bakım+Diğer</span><div class="br-tr"><div class="br-f" style="width:5%;background:var(--tx3)"></div></div><span class="br-v">₺95K</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AG DETAY -->
+      <div class="page" id="p-ag-detay">
+        <div class="ctabs">
+          <div class="ctab on" id="ct-cic" onclick="selCar('cic')">35 CIC 121</div>
+          <div class="ctab" id="ct-lfy" onclick="selCar('lfy')">35 LFY 24</div>
+          <div class="ctab" id="ct-cpy" onclick="selCar('cpy')">35 CPY 193</div>
+        </div>
+        <div id="car-detay"></div>
+      </div>
+
+      <!-- AG ANALİZ -->
+      <div class="page" id="p-ag-analiz">
+        <div class="kpi-row g4">
+          <div class="kpi" style="--al:var(--red)"><div class="kpi-l">5 Ay Toplam Zarar</div><div class="kpi-v dn">₺222.464</div><div class="kpi-s">Kredili hesapla</div></div>
+          <div class="kpi" style="--al:var(--orn)"><div class="kpi-l">Sabit Maliyet/Ay</div><div class="kpi-v warn">₺255.134</div><div class="kpi-s">Kredi+Sig+Maaş ort.</div></div>
+          <div class="kpi" style="--al:var(--acc)"><div class="kpi-l">En Kötü Ay</div><div class="kpi-v dn">Ocak 26</div><div class="kpi-s">₺260.793 zarar</div></div>
+          <div class="kpi" style="--al:var(--grn)"><div class="kpi-l">En İyi Ay</div><div class="kpi-v up">Eylül 25</div><div class="kpi-s">₺112.436 kâr</div></div>
+        </div>
+        <div class="cols2">
+          <div class="panel">
+            <div class="ph"><div class="pt">Aylık Satış Çöküşü</div></div>
+            <div class="pb">
+              <div class="br-row"><span class="br-l">Eylül</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--grn)"></div></div><span class="br-v up">₺555.650</span></div>
+              <div class="br-row"><span class="br-l">Ekim</span><div class="br-tr"><div class="br-f" style="width:56%;background:var(--orn)"></div></div><span class="br-v warn">₺312.490</span></div>
+              <div class="br-row"><span class="br-l">Kasım</span><div class="br-tr"><div class="br-f" style="width:49%;background:var(--red)"></div></div><span class="br-v dn">₺273.850</span></div>
+              <div class="br-row"><span class="br-l">Aralık</span><div class="br-tr"><div class="br-f" style="width:8%;background:var(--red)"></div></div><span class="br-v dn">₺44.050</span></div>
+              <div class="br-row"><span class="br-l">Ocak 26</span><div class="br-tr"><div class="br-f" style="width:0%;background:var(--red)"></div></div><span class="br-v dn">₺0</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">Sorun Tespiti</div></div>
+            <div class="pb">
+              <div class="alr alr-r"><strong>Ocak 2026 — Sıfır gelir</strong><br>Aylık sabit maliyet ₺258.600 devam ediyor. Araç çalışmıyor.</div>
+              <div class="alr alr-r"><strong>Aralık — %92 satış düşüşü</strong><br>Eylül'deki ₺555K seviyesinden ₺44K'ya geriledi.</div>
+              <div class="alr alr-o"><strong>₺167K/ay kredi yükü</strong><br>Araç iş almasa da kredi akıyor. Kâr marjını %51 kırpıyor.</div>
+              <div class="alr alr-o"><strong>Eylül yakıt anomalisi</strong><br>₺150.967 yakıt — diğer aylara göre 2,5 kat fazla. İncelenmeli.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AG BAŞABAŞ -->
+      <div class="page" id="p-ag-bb">
+        <div class="panel">
+          <div class="ph"><div class="pt">Başabaş Noktası — Aylık Minimum Satış Hedefi</div></div>
+          <div class="pb">
+            <table class="t">
+              <thead><tr><th>Araç</th><th>Sabit Maliyet/Ay</th><th>Değişken (ort.)</th><th>BB Noktası</th><th>Fiili Ort. Satış</th><th>Durum</th></tr></thead>
+              <tbody>
+                <tr><td>35 CIC 121 (Kredili)</td><td class="dn">₺77.590</td><td>₺2.722</td><td class="warn">₺88.742</td><td class="dn">₺960</td><td><span class="badge br2">Kritik</span></td></tr>
+                <tr><td>35 CIC 121 (Kredisiz)</td><td>₺4.236</td><td>₺2.722</td><td class="up">₺14.538</td><td class="dn">₺960</td><td><span class="badge br2">Çok Düşük</span></td></tr>
+                <tr><td>35 LFY 24</td><td>₺46.103</td><td>₺32.422</td><td class="warn">₺81.098</td><td class="up">₺161.590</td><td><span class="badge bg">Sağlıklı</span></td></tr>
+                <tr><td>35 CPY 193 (Kredili)</td><td class="dn">₺257.134</td><td>₺48.527</td><td class="dn">₺365.000</td><td class="dn">₺237.208</td><td><span class="badge br2">Altında</span></td></tr>
+                <tr><td>35 CPY 193 (Kredisiz)</td><td>₺90.134</td><td>₺48.527</td><td class="warn">₺198.000</td><td class="warn">₺237.208</td><td><span class="badge bo">Sınırda</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="cols3">
+          <div class="panel">
+            <div class="ph"><div class="pt">CIC 121 BB</div><span class="badge br2">₺88.742</span></div>
+            <div class="pb">
+              <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;line-height:1.6">Fiili ort. satış <strong style="color:var(--tx)">₺960</strong> — BB noktasının yalnızca <strong style="color:var(--red)">%1'i</strong>.</div>
+              <div class="br-row"><span class="br-l">Gereken</span><div class="br-tr"><div class="br-f" style="width:100%;background:rgba(231,76,60,.5)"></div></div><span class="br-v dn">₺88.742</span></div>
+              <div class="br-row"><span class="br-l">Fiili</span><div class="br-tr"><div class="br-f" style="width:1%;background:var(--grn)"></div></div><span class="br-v up">₺960</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">LFY 24 BB</div><span class="badge bg">₺81.098</span></div>
+            <div class="pb">
+              <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;line-height:1.6">Fiili ort. satış <strong style="color:var(--tx)">₺161.590</strong> — BB'nin <strong style="color:var(--grn)">2 katı</strong>. Güvenli bölgede.</div>
+              <div class="br-row"><span class="br-l">Gereken</span><div class="br-tr"><div class="br-f" style="width:50%;background:rgba(231,76,60,.4)"></div></div><span class="br-v dn">₺81.098</span></div>
+              <div class="br-row"><span class="br-l">Fiili</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--grn)"></div></div><span class="br-v up">₺161.590</span></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">CPY 193 BB</div><span class="badge br2">₺365.000</span></div>
+            <div class="pb">
+              <div style="font-size:11px;color:var(--tx2);margin-bottom:10px;line-height:1.6">Fiili ort. satış <strong style="color:var(--tx)">₺237.208</strong> — BB'nin <strong style="color:var(--red)">%65'i</strong>. Açık büyüyor.</div>
+              <div class="br-row"><span class="br-l">Gereken</span><div class="br-tr"><div class="br-f" style="width:100%;background:rgba(231,76,60,.5)"></div></div><span class="br-v dn">₺365.000</span></div>
+              <div class="br-row"><span class="br-l">Fiili</span><div class="br-tr"><div class="br-f" style="width:65%;background:var(--orn)"></div></div><span class="br-v warn">₺237.208</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BÜTÜNLEŞİK -->
+      <div class="page" id="p-butunlesik">
+        <div class="panel">
+          <div class="ph"><div class="pt">Şirket Geneli Net Kâr Tablosu — Yapılan İşler + Araç Giderleri (Eyl–Oca)</div></div>
+          <div class="pb">
+            <table class="t">
+              <thead><tr><th>Kalem</th><th>Eylül</th><th>Ekim</th><th>Kasım</th><th>Aralık</th><th>Oca 26</th><th>Toplam</th></tr></thead>
+              <tbody>
+                <tr><td style="color:var(--tx3);font-size:10px">YAPILAN İŞLER SATIŞI</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>2025 Aylık Satış</td><td class="up">₺4,40M</td><td class="up">₺2,58M</td><td class="up">₺2,54M</td><td class="up">₺4,48M</td><td class="up">₺4,40M</td><td class="up">₺18,4M</td></tr>
+                <tr><td>2025 Aylık Kâr</td><td class="up">₺752K</td><td class="up">₺418K</td><td class="up">₺373K</td><td class="up">₺563K</td><td class="up">₺752K</td><td class="up">₺2,86M</td></tr>
+                <tr><td style="color:var(--tx3);font-size:10px;padding-top:10px">ÖZ ARAÇ GELİR/GİDER</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>LFY 24 Kâr</td><td class="up">+39.631</td><td class="up">+72.048</td><td class="up">+90.420</td><td class="up">+89.264</td><td class="up">+67.798</td><td class="up">+359.161</td></tr>
+                <tr><td>CPY 193 Kâr/Zarar</td><td class="up">+112.436</td><td class="dn">-7.894</td><td class="dn">-39.888</td><td class="dn">-226.325</td><td class="dn">-260.793</td><td class="dn">-422.464</td></tr>
+                <tr><td>CIC 121 Kâr/Zarar</td><td class="dn">-90.504</td><td class="dn">-80.796</td><td class="dn">-98.745</td><td class="dn">-81.903</td><td class="dn">-70.464</td><td class="dn">-422.412</td></tr>
+                <tr class="tot">
+                  <td>Araç Net Toplam</td>
+                  <td class="up">+61.563</td><td class="dn">-16.642</td><td class="dn">-48.213</td><td class="dn">-219.964</td><td class="dn">-263.459</td><td class="dn">-485.715</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="cols2">
+          <div class="panel">
+            <div class="ph"><div class="pt">Öneri Özeti</div></div>
+            <div class="pb">
+              <div class="alr alr-r"><strong>CPY 193 acil eylem</strong> — Araç ya düzenli iş almalı (aylık min. ₺365K satış hedefi) ya da mevcut durumda operasyondan çıkarılması değerlendirilmeli. Her ay ₺260K kayıp büyüyor.</div>
+              <div class="alr alr-r"><strong>CIC 121 pasif durum</strong> — Kredisiz BB noktası ₺14.538 iken ort. satış ₺960. Araç iş almıyor. Kredi bitmeden bu araçtan kâr beklentisi mümkün değil; aktif işe yönlendirilmeli.</div>
+              <div class="alr alr-g"><strong>LFY 24 model alınmalı</strong> — 5 ayda ₺359K net kâr. Kredi yok, aktif kullanım, dengesiz maliyet yapısı yok. Bu araç şirkete para kazandırıyor.</div>
+              <div class="alr alr-o"><strong>Yakıt takibi sıkılaştırılmalı</strong> — CPY 193'ün Eylül yakıtı ₺150K anomali. Tüm araçlar için aylık yakıt limiti ve km başı tüketim takibi başlatılmalı.</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="ph"><div class="pt">Yapılan İşler — 2025 Kâr vs Araç Zarar</div></div>
+            <div class="pb">
+              <div style="font-size:11px;color:var(--tx2);margin-bottom:12px;line-height:1.6">2025 yılı <strong style="color:var(--tx)">₺6,32M net kâr</strong> üretirken öz araçlar 5 ayda <strong style="color:var(--red)">₺485K zarar</strong> yazdı. Araç zararları şirket kârının yaklaşık <strong style="color:var(--red)">%7,7'sini</strong> eritiyor.</div>
+              <div class="br-row"><span class="br-l">YI Kâr 2025</span><div class="br-tr"><div class="br-f" style="width:100%;background:var(--grn)"></div></div><span class="br-v up">₺6,32M</span></div>
+              <div class="br-row"><span class="br-l">LFY 24 Katkı</span><div class="br-tr"><div class="br-f" style="width:6%;background:var(--acc)"></div></div><span class="br-v up">+₺359K</span></div>
+              <div class="br-row"><span class="br-l">CPY Zarar</span><div class="br-tr"><div class="br-f" style="width:7%;background:var(--red)"></div></div><span class="br-v dn">-₺422K</span></div>
+              <div class="br-row"><span class="br-l">CIC Zarar</span><div class="br-tr"><div class="br-f" style="width:7%;background:rgba(231,76,60,.5)"></div></div><span class="br-v dn">-₺422K</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+const YI = {
+  '2024':{
+    sefer:2570,alis:32460375,satis:37717743,kar:5257510,
+    monthly:{OCAK:{s:149,al:1352678,sa:1565717,k:213039},ŞUBAT:{s:100,al:604565,sa:706813,k:102248},MART:{s:186,al:2088614,sa:2327840,k:239368},NİSAN:{s:149,al:1789394,sa:2061445,k:272051},MAYIS:{s:203,al:2646941,sa:2934398,k:287457},HAZİRAN:{s:184,al:2566908,sa:2900746,k:333838},TEMMUZ:{s:232,al:2228341,sa:2633077,k:404736},AĞUSTOS:{s:269,al:3186830,sa:3716828,k:529998},EYLÜL:{s:252,al:4098815,sa:4854380,k:755565},EKİM:{s:311,al:4691056,sa:5475775,k:784719},KASIM:{s:284,al:3646179,sa:4290602,k:644423},ARALIK:{s:250,al:3560054,sa:4250122,k:690068}},
+    customers:{VERGO:12532170,ALBATROS:8888381,HOROZ:3308418,LİMOSA:2506500,'CHAİN LOJ':1381768,'İŞÇİMENLER':1262597,'MİLİTZER':1202250,'OZ ENERGY':937450,SİNKA:640910,EURASIA:561000}
+  },
+  '2025':{
+    sefer:3024,alis:44709887,satis:51030341,kar:6320454,
+    monthly:{OCAK:{s:194,al:3651149,sa:4403263,k:752114},ŞUBAT:{s:131,al:2166028,sa:2584077,k:418049},MART:{s:148,al:2167185,sa:2540260,k:373075},NİSAN:{s:245,al:2908457,sa:3397464,k:489007},MAYIS:{s:321,al:3398128,sa:3884844,k:486716},HAZİRAN:{s:260,al:3222192,sa:3665609,k:443417},TEMMUZ:{s:281,al:4489698,sa:5043763,k:554065},AĞUSTOS:{s:229,al:3958589,sa:4430149,k:471560},EYLÜL:{s:317,al:5311653,sa:5929341,k:617688},EKİM:{s:365,al:5213146,sa:5828494,k:615348},KASIM:{s:291,al:4305612,sa:4842300,k:536688},ARALIK:{s:241,al:3918050,sa:4480777,k:562727}},
+    customers:{VERGO:16309800,RHENUS:9347562,ALBATROS:9028331,BAKTAT:4708250,LİMOSA:2741750,EVOLOG:1274550,HOROZ:1044750,BORUSAN:970474,GÜDEROĞLU:677043,INNOVATION:361000}
+  },
+  '2026':{
+    sefer:760,alis:13106890,satis:15169495,kar:2062605,
+    monthly:{OCAK:{s:245,al:2906602,sa:3366784,k:460182},ŞUBAT:{s:314,al:6750204,sa:7955675,k:1205471},MART:{s:200,al:3450084,sa:3847036,k:396952}},
+    customers:{RHENUS:6984135,VERGO:3643000,YGL:1421500,EVOLOG:421275,HOROZ:419750,YURUPA:363000,BAKTAT:306500,NEXTGEN:208861,VİYA:199942,EGEDENİZ:131000}
+  }
+};
+
+const CARS={
+  cic:{plaka:'35 CIC 121',col:'#2e86de',
+    items:{'KREDİ':[73354,73354,73354,73354,73354],'SİGORTA':[1977,1977,1829,1829,1829],'KASKO':[1976,1976,2618,2618,2618],'MAAŞ':[0,0,0,0,0],'SGK':[0,0,0,0,0],'YAKIT':[9488,2650,5326,4630,7033],'ADBLUE':[0,0,708,0,0],'HGS':[1900,130,496,472,1590],'BAKIM':[0,0,13705,0,0],'MTV':[437,437,437,0,1040],'LASTİK':[0,0,0,0,0],'ARVENTO':[4900,0,0,0,0],'VİZE/MUAYENE':[272,272,272,0,0]},
+    tm:[94304,80796,98745,82903,87464],ts:[3800,0,0,1000,17000],tk:[-90504,-80796,-98745,-81903,-70464]},
+  lfy:{plaka:'35 LFY 24',col:'#f0a500',
+    items:{'KREDİ':[0,0,0,0,0],'SİGORTA':[1692,1692,1692,1692,1692],'KASKO':[1230,1230,1230,1230,1230],'MAAŞ':[35000,35000,35000,35000,45000],'SGK':[8259,8259,14554,14554,16583],'YAKIT':[22192,32048,26392,28495,21743],'ADBLUE':[860,750,743,722,424],'HGS':[1374,4091,3532,3806,2290],'BAKIM':[0,24160,0,0,0],'OTOPARK':[225,910,0,0,0],'OTO YIKAMA':[400,0,0,0,0],'MTV':[437,437,437,437,1040],'ARVENTO':[4900,0,0,0,0],'LASTİK':[750,3375,0,0,0]},
+    tm:[77319,111952,83580,85936,90002],ts:[116950,184000,174000,175200,157800],tk:[39631,72048,90420,89264,67798]},
+  cpy:{plaka:'35 CPY 193',col:'#27ae60',
+    items:{'KREDİ':[167000,167000,167000,167000,167000],'SİGORTA':[5164,5164,5164,5164,5164],'KASKO':[6970,6970,6970,6970,6970],'MAAŞ':[70000,50000,50000,50000,60000],'SGK':[14264,17617,18101,18730,19573],'YAKIT':[150967,68785,57956,16418,0],'ADBLUE':[2174,2174,2127,0,0],'HGS':[10401,1186,1120,0,0],'YIKAMA':[2172,0,1800,0,0],'BAKIM':[8102,1488,3500,3360,0],'ARVENTO':[6000,0,0,0,0],'VİZE':[0,0,0,2733,0],'MTV':[0,0,0,0,2086]},
+    tm:[443214,320384,313738,270375,260793],ts:[555650,312490,273850,44050,0],tk:[112436,-7894,-39888,-226325,-260793]}
+};
+const MONTHS=['EYLÜL','EKİM','KASIM','ARALIK','OCA 26'];
+
+let curYr='2024', curCar='cic';
+const charts={};
+
+function f(n){return n===0?'—':'₺'+Math.round(Math.abs(n)).toLocaleString('tr-TR')}
+function fK(n){const s='₺'+Math.round(Math.abs(n)).toLocaleString('tr-TR');return n>=0?`<span class="up">${s}</span>`:`<span class="dn">(${s})</span>`}
+
+function setYr(y){
+  curYr=y;
+  document.querySelectorAll('.yr-tab').forEach(t=>t.classList.toggle('on',t.textContent.startsWith(y)));
+  renderYI();
+}
+
+function renderYI(){
+  const d=YI[curYr];
+  const pct=(d.kar/d.alis*100).toFixed(1);
+  document.getElementById('yi-kpi').innerHTML=`
+    <div class="kpi" style="--al:var(--blue)"><div class="kpi-l">Toplam Sefer</div><div class="kpi-v">${d.sefer.toLocaleString('tr-TR')}</div></div>
+    <div class="kpi" style="--al:var(--grn)"><div class="kpi-l">Toplam Satış</div><div class="kpi-v" style="font-size:14px">₺${(d.satis/1e6).toFixed(1)}M</div></div>
+    <div class="kpi" style="--al:var(--acc)"><div class="kpi-l">Net Kâr</div><div class="kpi-v up" style="font-size:14px">₺${(d.kar/1e6).toFixed(2)}M</div></div>
+    <div class="kpi" style="--al:var(--pur)"><div class="kpi-l">Kâr Marjı</div><div class="kpi-v up">%${pct}</div></div>`;
+
+  const months=Object.keys(d.monthly);
+  mkChart('ch-satis',months,months.map(m=>d.monthly[m].sa),'Satış','#2e86de');
+  mkChart('ch-kar',months,months.map(m=>d.monthly[m].k),'Kâr','#f0a500');
+
+  document.getElementById('ay-panel-title').textContent=`${curYr} Aylık Detay`;
+  let rows='',tot={s:0,al:0,sa:0,k:0};
+  months.forEach(m=>{
+    const r=d.monthly[m];tot.s+=r.s;tot.al+=r.al;tot.sa+=r.sa;tot.k+=r.k;
+    rows+=`<tr><td>${m}</td><td>${r.s}</td><td>${f(r.al)}</td><td>${f(r.sa)}</td><td class="up">${f(r.k)}</td><td class="up">%${(r.k/r.al*100).toFixed(1)}</td></tr>`;
+  });
+  rows+=`<tr class="tot"><td>Toplam</td><td>${tot.s}</td><td>${f(tot.al)}</td><td>${f(tot.sa)}</td><td class="up">${f(tot.k)}</td><td class="up">%${(tot.k/tot.al*100).toFixed(1)}</td></tr>`;
+  document.getElementById('ay-tbody').innerHTML=rows;
+
+  document.getElementById('cust-title').textContent=`${curYr} Top Müşteriler`;
+  const custs=Object.entries(d.customers);
+  const mx=custs[0][1];
+  const cols=['#f0a500','#2e86de','#27ae60','#8e44ad','#e74c3c','#e67e22','#1abc9c','#3498db','#9b59b6','#e67e22'];
+  document.getElementById('cust-tbody').innerHTML=custs.map(([n,v],i)=>`<tr><td style="color:var(--tx3)">${i+1}</td><td>${n}</td><td class="up">${f(v)}</td><td style="color:var(--tx3)">%${(v/d.satis*100).toFixed(1)}</td></tr>`).join('');
+  document.getElementById('cust-bars').innerHTML=custs.map(([n,v],i)=>`<div class="br-row"><span class="br-l">${n}</span><div class="br-tr"><div class="br-f" style="width:${Math.round(v/mx*100)}%;background:${cols[i]}"></div></div><span class="br-v">${f(v)}</span></div>`).join('');
+}
+
+function mkChart(id,labels,data,label,color){
+  const cv=document.getElementById(id);if(!cv)return;
+  if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(cv.getContext('2d'),{
+    type:'bar',data:{labels,datasets:[{label,data,backgroundColor:color+'88',borderColor:color,borderWidth:1,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6b7a8d',font:{size:9}}},
+              y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6b7a8d',font:{size:9},callback:v=>'₺'+(v/1e6).toFixed(1)+'M'}}}}});
+}
+
+function selCar(k){
+  curCar=k;
+  ['cic','lfy','cpy'].forEach(c=>document.getElementById('ct-'+c).classList.toggle('on',c===k));
+  const c=CARS[k];
+  const tm=c.tm.reduce((a,b)=>a+b,0),ts=c.ts.reduce((a,b)=>a+b,0),tk=c.tk.reduce((a,b)=>a+b,0);
+  let html=`<div class="kpi-row g3">
+    <div class="kpi" style="--al:${c.col}"><div class="kpi-l">5 Ay Toplam Maliyet</div><div class="kpi-v" style="font-size:14px">${f(tm)}</div></div>
+    <div class="kpi" style="--al:var(--grn)"><div class="kpi-l">5 Ay Toplam Satış</div><div class="kpi-v" style="font-size:14px">${f(ts)}</div></div>
+    <div class="kpi" style="--al:${tk>=0?'var(--grn)':'var(--red)'}"><div class="kpi-l">Net Kâr/Zarar</div><div class="kpi-v ${tk>=0?'up':'dn'}" style="font-size:14px">${tk>=0?'+':'-'}${f(Math.abs(tk))}</div></div>
+  </div>
+  <div class="panel"><div class="ph"><div class="pt">${c.plaka} — Aylık Gider Kalemleri</div></div><div class="pb">
+  <div class="gd-head"><div class="gd-hc">Kalem</div>${MONTHS.map(m=>`<div class="gd-hc">${m}</div>`).join('')}</div>
+  <div>`;
+  Object.entries(c.items).forEach(([k,vs])=>{
+    if(!vs.some(v=>v>0))return;
+    html+=`<div class="gd-row"><div class="gd-c">${k}</div>${vs.map(v=>`<div class="gd-c">${v===0?'<span style="color:var(--tx3)">—</span>':'₺'+v.toLocaleString('tr-TR')}</div>`).join('')}</div>`;
+  });
+  html+=`<div class="gd-row gd-tot"><div class="gd-c">TOPLAM MALİYET</div>${c.tm.map(v=>`<div class="gd-c">₺${v.toLocaleString('tr-TR')}</div>`).join('')}</div>
+    <div class="gd-row" style="background:rgba(39,174,96,.05)"><div class="gd-c up">TOPLAM SATIŞ</div>${c.ts.map(v=>`<div class="gd-c ${v>0?'up':''}">${v===0?'<span style="color:var(--tx3)">—</span>':'₺'+v.toLocaleString('tr-TR')}</div>`).join('')}</div>
+    <div class="gd-row"><div class="gd-c warn">NET KÂR/ZARAR</div>${c.tk.map(v=>`<div class="gd-c ${v>=0?'up':'dn'}">${v>=0?'+':'-'}₺${Math.abs(v).toLocaleString('tr-TR')}</div>`).join('')}</div>
+  </div></div></div>`;
+  document.getElementById('car-detay').innerHTML=html;
+}
+
+const pageTitles={
+  dashboard:'Dashboard — LFY Lojistik',
+  'yi-ozet':'Yapılan İşler — Özet & KPI',
+  'yi-aylik':'Yapılan İşler — Aylık Analiz',
+  'yi-musteri':'Yapılan İşler — Müşteriler',
+  'ag-ozet':'Araç Giderleri — Genel Özet',
+  'ag-detay':'Araç Giderleri — Kalem Detayı',
+  'ag-analiz':'CPY 193 — Zarar Analizi',
+  'ag-bb':'Başabaş Noktası Hesabı',
+  butunlesik:'Bütünleşik Net Kâr Tablosu'
+};
+const yiPages=['yi-ozet','yi-aylik','yi-musteri'];
+const agPages=['ag-ozet','ag-detay','ag-analiz','ag-bb'];
+
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('on'));
+  if(el)el.classList.add('on');
+  document.getElementById('tb-title').textContent=pageTitles[id]||id;
+  document.getElementById('yr-tabs').style.display=yiPages.includes(id)?'flex':'none';
+  if(yiPages.includes(id))renderYI();
+  if(id==='ag-detay')selCar(curCar);
+}
+
+renderYI();
+selCar('cic');
+document.getElementById('yr-tabs').style.display='none';
+</script>
