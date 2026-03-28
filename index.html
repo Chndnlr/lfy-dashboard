@@ -1577,7 +1577,7 @@ async function importYapilanIsler(event) {
   const file = event.target.files[0];
   if(!file) return;
   const statusEl = document.getElementById('uploadStatus');
-  if(statusEl) { statusEl.textContent = '⏳ Yükleniyor...'; statusEl.style.color = '#fbbf24'; }
+  if(statusEl) { if(statusEl) statusEl.textContent = '⏳ Yükleniyor...'; if(statusEl) statusEl.style.color = '#fbbf24'; }
 
   // XLSX kütüphanesi hazır değilse bekle (max 5 sn)
   for(let i = 0; i < 50; i++) {
@@ -1585,13 +1585,13 @@ async function importYapilanIsler(event) {
     await new Promise(r => setTimeout(r, 100));
   }
   if(typeof XLSX === 'undefined') {
-    if(statusEl) { statusEl.textContent = '❌ Kütüphane yüklenemedi, sayfayı yenileyip tekrar deneyin'; statusEl.style.color = '#f87171'; }
+    if(statusEl) { if(statusEl) statusEl.textContent = '❌ Kütüphane yüklenemedi, sayfayı yenileyip tekrar deneyin'; if(statusEl) statusEl.style.color = '#f87171'; }
     toast('Excel kütüphanesi yüklenemedi!', 'error');
     event.target.value = '';
     return;
   }
 
-  if(statusEl) { statusEl.textContent = '⏳ Excel okunuyor...'; statusEl.style.color = '#fbbf24'; }
+  if(statusEl) { if(statusEl) statusEl.textContent = '⏳ Excel okunuyor...'; if(statusEl) statusEl.style.color = '#fbbf24'; }
   
   const reader = new FileReader();
   reader.onload = async function(e) {
@@ -1668,26 +1668,26 @@ async function importYapilanIsler(event) {
             src: `excel_${sheetName}`,
           });
         }
-        if(statusEl) statusEl.textContent = `⏳ ${sheetName} okundu: ${tumSiparisler.length} kayıt`;
+        if(statusEl) if(statusEl) statusEl.textContent = `⏳ ${sheetName} okundu: ${tumSiparisler.length} kayıt`;
       }
 
       if(tumSiparisler.length === 0) {
-        if(statusEl) { statusEl.textContent = '❌ Veri bulunamadı'; statusEl.style.color = '#f87171'; }
+        if(statusEl) { if(statusEl) statusEl.textContent = '❌ Veri bulunamadı'; if(statusEl) statusEl.style.color = '#f87171'; }
         return;
       }
 
       // localStorage'a kaydet
-      if(statusEl) statusEl.textContent = `⏳ ${tumSiparisler.length} kayıt kaydediliyor...`;
+      if(statusEl) if(statusEl) statusEl.textContent = `⏳ ${tumSiparisler.length} kayıt kaydediliyor...`;
       localStorage.setItem('lt_excel_sip', JSON.stringify(tumSiparisler));
       localStorage.setItem('lt_excel_tarih', new Date().toLocaleDateString('tr-TR'));
       siparisler = [...siparisler.filter(s=>!s.src?.startsWith('excel_')), ...tumSiparisler];
 
-      if(statusEl) { statusEl.textContent = `✅ ${tumSiparisler.length} kayıt yüklendi!`; statusEl.style.color = '#4ade80'; }
+      if(statusEl) { if(statusEl) statusEl.textContent = `✅ ${tumSiparisler.length} kayıt yüklendi!`; if(statusEl) statusEl.style.color = '#4ade80'; }
       toast(`✅ ${tumSiparisler.length} sipariş aktarıldı!`, 'success');
       renderDash();
 
     } catch(err) {
-      if(statusEl) { statusEl.textContent = '❌ Hata: ' + err.message; statusEl.style.color = '#f87171'; }
+      if(statusEl) { if(statusEl) statusEl.textContent = '❌ Hata: ' + err.message; if(statusEl) statusEl.style.color = '#f87171'; }
       toast('Hata: ' + err.message, 'error');
     }
   };
